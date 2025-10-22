@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BigModel API 调试工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+            font-size: 14px;
+        }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #6c757d; cursor: not-allowed; }
+        .response {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .test-section {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+            border-radius: 0 5px 5px 0;
+        }
+        .step-number {
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 BigModel API 连接调试工具</h1>
+        <p>此工具帮助诊断BigModel API连接问题</p>
+
+        <div id="status" class="status info">
+            准备开始调试...
+        </div>
+
+        <!-- API配置 -->
+        <div class="test-section">
+            <h3>📝 API配置</h3>
+            <label for="apiKey">API密钥:</label>
+            <input type="text" id="apiKey" value="8053216b1264431799c02a08c86cd213.YcUOAUDbyGuGSs63" readonly>
+            <label for="model">模型:</label>
+            <input type="text" id="model" value="glm-4.6" readonly>
+
+            <button onclick="testBasicConnectivity()">🌐 测试基本网络连接</button>
+            <button onclick="testAPIDirectly()">🔗 直接测试API</button>
+            <button onclick="testJWTToken()">🔑 测试JWT Token</button>
+            <button onclick="testAlternativeEndpoints()">🔄 测试其他端点</button>
+        </div>
+
+        <!-- 调试步骤 -->
+        <div class="test-section">
+            <h3>🔧 调试步骤</h3>
+            <div class="step">
+                <span class="step-number">步骤1:</span> 测试基本网络连接到智谱AI服务器
+            </div>
+            <div class="step">
+                <span class="step-number">步骤2:</span> 验证API密钥格式和有效性
+            </div>
+            <div class="step">
+                <span class="step-number">步骤3:</span> 测试JWT Token获取（如果需要）
+            </div>
+            <div class="step">
+                <span class="step-number">步骤4:</span> 尝试不同的API端点和认证方式
+            </div>
+            <div class="step">
+                <span class="step-number">步骤5:</span> 测试完整的对话API调用
+            </div>
+        </div>
+
+        <div>
+            <button onclick="runAllTests()">🚀 运行所有测试</button>
+            <button onclick="clearResults()">🗑️ 清除结果</button>
+        </div>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const API_KEY = '8053216b1264431799c02a08c86cd213.YcUOAUDbyGuGSs63';
+        const API_BASE_URL = 'https://open.bigmodel.cn';
+
+        function updateStatus(message, type = 'info') {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+        }
+
+        function addResult(title, content, type = 'info') {
+            const resultsEl = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.innerHTML = `
+                <h3>${title}</h3>
+                <div class="response ${type}">${content}</div>
+            `;
+            resultsEl.appendChild(resultDiv);
+        }
+
+        async function testBasicConnectivity() {
+            updateStatus('正在测试基本网络连接...', 'info');
+
+            try {
+                // 测试DNS解析
+                const response = await fetch('https://open.bigmodel.cn', {
+                    method: 'HEAD',
+                    mode: 'no-cors'
+                });
+
+                addResult('基本连接测试', '✅ 能够访问 open.bigmodel.cn 域名', 'success');
+                updateStatus('基本连接测试完成', 'success');
+            } catch (error) {
+                addResult('基本连接测试', `❌ 连接失败: ${error.message}`, 'error');
+                updateStatus('基本连接测试失败', 'error');
+            }
+        }
+
+        async function testAPIDirectly() {
+            updateStatus('正在直接测试API...', 'info');
+
+            const testUrl = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
+            const testPayload = {
+                model: 'glm-4.6',
+                messages: [
+                    {
+                        role: 'user',
+                        content: '请简单回复"测试成功"'
+                    }
+                ],
+                max_tokens: 50,
+                temperature: 0.1
+            };
+
+            console.log('测试URL:', testUrl);
+            console.log('测试Payload:', testPayload);
+
+            try {
+                const response = await fetch(testUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify(testPayload)
+                });
+
+                console.log('响应状态:', response.status);
+                console.log('响应头:', response.headers);
+
+                const responseText = await response.text();
+                console.log('响应内容:', responseText);
+
+                if (response.ok) {
+                    addResult('API直接测试', `✅ API调用成功\n状态码: ${response.status}\n响应: ${responseText}`, 'success');
+                    updateStatus('API直接测试成功', 'success');
+                } else {
+                    addResult('API直接测试', `❌ API调用失败\n状态码: ${response.status}\n状态文本: ${response.statusText}\n响应: ${responseText}`, 'error');
+                    updateStatus('API直接测试失败', 'error');
+                }
+            } catch (error) {
+                console.error('网络错误:', error);
+                addResult('API直接测试', `❌ 网络错误: ${error.message}\n\n可能的原因:\n1. CORS限制\n2. 网络连接问题\n3. API端点错误`, 'error');
+                updateStatus('API直接测试失败', 'error');
+            }
+        }
+
+        async function testJWTToken() {
+            updateStatus('正在测试JWT Token...', 'info');
+
+            try {
+                const response = await fetch('https://open.bigmodel.cn/api/paas/v4/token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        api_key: API_KEY
+                    })
+                });
+
+                const responseText = await response.text();
+                console.log('JWT Token响应:', responseText);
+
+                if (response.ok) {
+                    const data = JSON.parse(responseText);
+                    addResult('JWT Token测试', `✅ Token获取成功\nToken: ${data.token}\nExpires in: ${data.expires_in}秒`, 'success');
+                    updateStatus('JWT Token测试成功', 'success');
+                } else {
+                    addResult('JWT Token测试', `❌ Token获取失败\n状态码: ${response.status}\n响应: ${responseText}`, 'error');
+                    updateStatus('JWT Token测试失败', 'error');
+                }
+            } catch (error) {
+                addResult('JWT Token测试', `❌ Token获取错误: ${error.message}`, 'error');
+                updateStatus('JWT Token测试失败', 'error');
+            }
+        }
+
+        async function testAlternativeEndpoints() {
+            updateStatus('正在测试其他端点...', 'info');
+
+            const endpoints = [
+                'https://open.bigmodel.cn/api/paas/v4/chat/completions',
+                'https://open.bigmodel.cn/api/apaas/v4/chat/completions',
+                'https://api.bigmodel.cn/api/paas/v4/chat/completions',
+                'https://api.bigmodel.cn/v4/chat/completions'
+            ];
+
+            for (const endpoint of endpoints) {
+                try {
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${API_KEY}`
+                        },
+                        body: JSON.stringify({
+                            model: 'glm-4.6',
+                            messages: [{ role: 'user', content: 'test' }],
+                            max_tokens: 10
+                        })
+                    });
+
+                    addResult(`端点测试: ${endpoint}`,
+                        `状态码: ${response.status}\n状态: ${response.ok ? '✅' : '❌'}`,
+                        response.ok ? 'success' : 'warning');
+
+                    if (response.ok) {
+                        updateStatus(`找到可用端点: ${endpoint}`, 'success');
+                        return;
+                    }
+                } catch (error) {
+                    addResult(`端点测试: ${endpoint}`, `❌ 错误: ${error.message}`, 'error');
+                }
+            }
+
+            updateStatus('所有端点测试完成，未找到可用端点', 'warning');
+        }
+
+        async function runAllTests() {
+            clearResults();
+            await testBasicConnectivity();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await testAPIDirectly();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await testJWTToken();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await testAlternativeEndpoints();
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+            updateStatus('结果已清除', 'info');
+        }
+
+        // 页面加载时自动运行测试
+        window.addEventListener('load', () => {
+            setTimeout(runAllTests, 1000);
+        });
+    </script>
+</body>
+</html>

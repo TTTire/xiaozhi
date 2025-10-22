@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BigModel API 修复测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #6c757d; cursor: not-allowed; }
+        .response {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 BigModel API 修复测试</h1>
+        <p>测试修复后的AI服务模块</p>
+
+        <div id="status" class="status info">
+            准备测试修复后的API...
+        </div>
+
+        <div>
+            <button onclick="testJWTToken()">🔑 测试JWT Token</button>
+            <button onclick="testAIResponse()">💬 测试AI对话</button>
+            <button onclick="testFullIntegration()">🚀 测试完整集成</button>
+            <button onclick="clearResults()">🗑️ 清除结果</button>
+        </div>
+
+        <div id="results"></div>
+    </div>
+
+    <script src="ai-service.js"></script>
+    <script>
+        const API_KEY = '8053216b1264431799c02a08c86cd213.YcUOAUDbyGuGSs63';
+
+        function updateStatus(message, type = 'info') {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+        }
+
+        function addResult(title, content, type = 'info') {
+            const resultsEl = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.innerHTML = `
+                <h3>${title}</h3>
+                <div class="response ${type}">${content}</div>
+            `;
+            resultsEl.appendChild(resultDiv);
+        }
+
+        async function testJWTToken() {
+            updateStatus('正在测试JWT Token获取...', 'info');
+
+            try {
+                const aiService = new AIService({
+                    provider: 'bigmodel',
+                    apiKey: API_KEY
+                });
+
+                // 手动调用JWT获取方法来测试
+                const token = await aiService.getBigModelJWT();
+
+                addResult('JWT Token测试', `✅ JWT Token获取成功\nToken前缀: ${token.substring(0, 20)}...\nToken长度: ${token.length}`, 'success');
+                updateStatus('JWT Token测试成功', 'success');
+            } catch (error) {
+                addResult('JWT Token测试', `❌ JWT Token获取失败: ${error.message}`, 'error');
+                updateStatus('JWT Token测试失败', 'error');
+            }
+        }
+
+        async function testAIResponse() {
+            updateStatus('正在测试AI对话...', 'info');
+
+            try {
+                const aiService = new AIService({
+                    provider: 'bigmodel',
+                    apiKey: API_KEY,
+                    model: 'glm-4'
+                });
+
+                const response = await aiService.generateResponse('你好，请简单介绍一下你自己。');
+
+                addResult('AI对话测试', `✅ AI对话成功\n回复: ${response}`, 'success');
+                updateStatus('AI对话测试成功', 'success');
+            } catch (error) {
+                addResult('AI对话测试', `❌ AI对话失败: ${error.message}`, 'error');
+                updateStatus('AI对话测试失败', 'error');
+            }
+        }
+
+        async function testFullIntegration() {
+            updateStatus('正在测试完整集成...', 'info');
+
+            try {
+                // 模拟完整的应用初始化流程
+                window.AI_CONFIG = {
+                    provider: 'bigmodel',
+                    apiKey: API_KEY,
+                    model: 'glm-4',
+                    maxTokens: 1000,
+                    temperature: 0.7
+                };
+
+                const aiService = new AIService(window.AI_CONFIG);
+
+                addResult('完整集成测试', '✅ AI服务初始化成功', 'success');
+
+                // 测试多个对话
+                const testMessages = [
+                    '你好，我想了解一下健康饮食',
+                    '请推荐一些适合上班族的营养建议',
+                    '如何合理安排一日三餐？'
+                ];
+
+                for (let i = 0; i < testMessages.length; i++) {
+                    const response = await aiService.generateResponse(testMessages[i]);
+                    addResult(`对话测试 ${i + 1}`, `问题: ${testMessages[i]}\n回复: ${response.substring(0, 100)}...`, 'success');
+                }
+
+                updateStatus('完整集成测试成功', 'success');
+            } catch (error) {
+                addResult('完整集成测试', `❌ 集成测试失败: ${error.message}`, 'error');
+                updateStatus('完整集成测试失败', 'error');
+            }
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+            updateStatus('结果已清除', 'info');
+        }
+
+        // 页面加载时自动运行基础测试
+        window.addEventListener('load', () => {
+            setTimeout(testJWTToken, 1000);
+        });
+    </script>
+</body>
+</html>

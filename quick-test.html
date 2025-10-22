@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BigModel API 测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #6c757d; cursor: not-allowed; }
+        .response {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 BigModel API 连接测试</h1>
+
+        <div id="status" class="status info">
+            准备测试BigModel API连接...
+        </div>
+
+        <div>
+            <button onclick="testConnection()">🔗 测试连接</button>
+            <button onclick="testConversation()">💬 测试对话</button>
+            <button onclick="clearResults()">🗑️ 清除结果</button>
+        </div>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const API_KEY = '8053216b1264431799c02a08c86cd213.YcUOAUDbyGuGSs63';
+        const API_URL = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
+
+        function updateStatus(message, type = 'info') {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+        }
+
+        function addResult(title, content, type = 'info') {
+            const resultsEl = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.innerHTML = `
+                <h3>${title}</h3>
+                <div class="response ${type}">${content}</div>
+            `;
+            resultsEl.appendChild(resultDiv);
+        }
+
+        async function testConnection() {
+            updateStatus('正在测试连接...', 'info');
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'glm-4.6',
+                        messages: [
+                            {
+                                role: 'user',
+                                content: '请简单回复"连接成功"'
+                            }
+                        ],
+                        max_tokens: 50,
+                        temperature: 0.1
+                    })
+                });
+
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Response data:', data);
+
+                    updateStatus('✅ 连接成功！', 'success');
+                    addResult('连接测试成功', JSON.stringify(data, null, 2), 'success');
+
+                    if (data.choices && data.choices[0] && data.choices[0].message) {
+                        addResult('AI回复', data.choices[0].message.content, 'success');
+                    }
+                } else {
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
+
+                    updateStatus(`❌ 连接失败: ${response.status}`, 'error');
+                    addResult('连接失败', `状态码: ${response.status}\n错误信息: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                console.error('Network error:', error);
+                updateStatus(`❌ 网络错误: ${error.message}`, 'error');
+                addResult('网络错误', error.message, 'error');
+            }
+        }
+
+        async function testConversation() {
+            updateStatus('正在测试营养师对话...', 'info');
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'glm-4.6',
+                        messages: [
+                            {
+                                role: 'system',
+                                content: '你是一位专业的AI营养教练，名叫"智养AI"。你的角色特征是"共情科学家" - 既科学严谨又温暖支持。请用温暖专业的语调回答用户的营养健康问题。'
+                            },
+                            {
+                                role: 'user',
+                                content: '你好！我想了解一下健康饮食的基本原则。'
+                            }
+                        ],
+                        max_tokens: 200,
+                        temperature: 0.7
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+
+                    updateStatus('✅ 对话测试成功！', 'success');
+
+                    if (data.choices && data.choices[0] && data.choices[0].message) {
+                        addResult('营养师对话测试', data.choices[0].message.content, 'success');
+                    }
+                } else {
+                    const errorText = await response.text();
+                    updateStatus(`❌ 对话测试失败: ${response.status}`, 'error');
+                    addResult('对话测试失败', errorText, 'error');
+                }
+            } catch (error) {
+                console.error('Conversation test error:', error);
+                updateStatus(`❌ 对话测试错误: ${error.message}`, 'error');
+                addResult('对话测试错误', error.message, 'error');
+            }
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+            updateStatus('结果已清除', 'info');
+        }
+
+        // 页面加载时自动测试连接
+        window.addEventListener('load', () => {
+            setTimeout(testConnection, 1000);
+        });
+    </script>
+</body>
+</html>

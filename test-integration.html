@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智养AI - 集成测试</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: var(--color-off-white);
+            padding: 20px;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--color-white);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-xl);
+        }
+        .status {
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .success {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+            border: 2px solid #b8dacc;
+        }
+        .error {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+            border: 2px solid #f1b0b7;
+        }
+        .info {
+            background: linear-gradient(135deg, #d1ecf1, #bee5eb);
+            color: #0c5460;
+            border: 2px solid #abdde5;
+        }
+        .chat-container {
+            background: var(--color-warm-beige);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid var(--color-light-taupe);
+        }
+        .chat-messages {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        .message {
+            display: flex;
+            margin-bottom: 15px;
+            gap: 12px;
+        }
+        .user-message {
+            flex-direction: row-reverse;
+        }
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .message-content {
+            padding: 12px 16px;
+            border-radius: 15px;
+            max-width: 70%;
+            line-height: 1.5;
+        }
+        .user-message .message-content {
+            background: var(--gradient-primary);
+            color: white;
+        }
+        .ai-message .message-content {
+            background: var(--color-white);
+            color: var(--color-text-primary);
+            border: 1px solid var(--color-light-taupe);
+        }
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+        }
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid var(--color-light-taupe);
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        .chat-input:focus {
+            border-color: var(--color-healing-green);
+        }
+        .send-btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(122, 154, 126, 0.3);
+        }
+        .send-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .test-actions {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 12px 24px;
+            border-radius: 25px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+        }
+        .btn-secondary {
+            background: transparent;
+            color: var(--color-healing-green);
+            border: 2px solid var(--color-healing-green);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .response-preview {
+            background: var(--color-cool-gray);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 style="text-align: center; color: var(--color-charcoal); margin-bottom: 30px;">
+            🧪 智养AI - 集成测试
+        </h1>
+        <p style="text-align: center; color: var(--color-text-secondary); margin-bottom: 40px;">
+            测试修复后的BigModel API集成功能
+        </p>
+
+        <div id="status" class="status info">
+            正在初始化AI服务...
+        </div>
+
+        <div class="test-actions">
+            <button class="btn btn-primary" onclick="testInitialization()">🚀 测试初始化</button>
+            <button class="btn btn-secondary" onclick="testJWT()">🔑 测试JWT Token</button>
+            <button class="btn btn-primary" onclick="testBasicChat()">💬 测试基础对话</button>
+            <button class="btn btn-secondary" onclick="testComplexChat()">🧠 测试复杂对话</button>
+            <button class="btn btn-primary" onclick="runAllTests()">🎯 运行所有测试</button>
+        </div>
+
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+                <!-- 聊天消息将显示在这里 -->
+            </div>
+            <div class="chat-input-container">
+                <input type="text" class="chat-input" id="chatInput" placeholder="输入消息测试AI对话...">
+                <button class="send-btn" id="sendBtn" onclick="sendMessage()">发送</button>
+            </div>
+        </div>
+
+        <div id="testResults"></div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="ai-service.js"></script>
+    <script>
+        let aiService = null;
+        let isRealAI = false;
+
+        function updateStatus(message, type = 'info') {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+        }
+
+        function addTestResult(title, content, type = 'info') {
+            const resultsEl = document.getElementById('testResults');
+            const resultDiv = document.createElement('div');
+            resultDiv.innerHTML = `
+                <h3>${title}</h3>
+                <div class="response-preview ${type}">${content}</div>
+            `;
+            resultsEl.appendChild(resultDiv);
+        }
+
+        function addMessage(role, content) {
+            const messagesEl = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}-message`;
+
+            const avatar = role === 'user' ?
+                '<div class="message-avatar" style="background: var(--gradient-warm); color: white;">您</div>' :
+                '<div class="message-avatar" style="background: var(--gradient-primary); color: white;">AI</div>';
+
+            messageDiv.innerHTML = `
+                ${avatar}
+                <div class="message-content">${content}</div>
+            `;
+
+            messagesEl.appendChild(messageDiv);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        // 测试1: 初始化
+        async function testInitialization() {
+            updateStatus('正在测试AI服务初始化...', 'info');
+
+            try {
+                console.log('开始初始化测试...');
+                console.log('配置:', window.AI_CONFIG);
+
+                if (!window.AI_CONFIG || !window.AI_CONFIG.apiKey) {
+                    throw new Error('未找到AI配置或API密钥');
+                }
+
+                aiService = new AIService(window.AI_CONFIG);
+                isRealAI = true;
+
+                addTestResult('初始化测试', '✅ AI服务初始化成功\n提供商: ' + window.AI_CONFIG.provider + '\n模型: ' + window.AI_CONFIG.model, 'success');
+                updateStatus('初始化测试成功', 'success');
+
+            } catch (error) {
+                addTestResult('初始化测试', '❌ 初始化失败: ' + error.message, 'error');
+                updateStatus('初始化测试失败', 'error');
+            }
+        }
+
+        // 测试2: JWT Token
+        async function testJWT() {
+            if (!aiService) {
+                addTestResult('JWT测试', '❌ 请先运行初始化测试', 'error');
+                return;
+            }
+
+            updateStatus('正在测试JWT Token获取...', 'info');
+
+            try {
+                console.log('开始JWT Token测试...');
+
+                // 直接调用JWT获取方法
+                const token = await aiService.getBigModelJWT();
+
+                addTestResult('JWT Token测试',
+                    `✅ JWT Token获取成功\nToken前缀: ${token.substring(0, 30)}...\nToken长度: ${token.length} 字符\nToken有效期: ${aiService.tokenExpiry ? new Date(aiService.tokenExpiry).toLocaleString() : '未知'}`,
+                    'success');
+                updateStatus('JWT Token测试成功', 'success');
+
+            } catch (error) {
+                addTestResult('JWT Token测试', '❌ JWT Token获取失败: ' + error.message, 'error');
+                updateStatus('JWT Token测试失败', 'error');
+            }
+        }
+
+        // 测试3: 基础对话
+        async function testBasicChat() {
+            if (!aiService) {
+                addTestResult('基础对话测试', '❌ 请先运行初始化测试', 'error');
+                return;
+            }
+
+            updateStatus('正在测试基础对话功能...', 'info');
+
+            try {
+                const testMessage = '你好，请简单回复"基础测试成功"';
+                console.log('基础对话测试 - 消息:', testMessage);
+
+                addMessage('user', testMessage);
+
+                const response = await aiService.generateResponse(testMessage);
+
+                addMessage('ai', response);
+
+                addTestResult('基础对话测试',
+                    `✅ 基础对话测试成功\n问题: ${testMessage}\n回复: ${response.substring(0, 200)}${response.length > 200 ? '...' : ''}`,
+                    'success');
+                updateStatus('基础对话测试成功', 'success');
+
+            } catch (error) {
+                addTestResult('基础对话测试', '❌ 基础对话失败: ' + error.message, 'error');
+                updateStatus('基础对话测试失败', 'error');
+            }
+        }
+
+        // 测试4: 复杂对话
+        async function testComplexChat() {
+            if (!aiService) {
+                addTestResult('复杂对话测试', '❌ 请先运行初始化测试', 'error');
+                return;
+            }
+
+            updateStatus('正在测试复杂对话功能...', 'info');
+
+            try {
+                const testMessage = '我是一名程序员，经常加班，想要改善营养状况。请给我一些具体的建议，包括饮食搭配和时间安排。';
+                console.log('复杂对话测试 - 消息:', testMessage);
+
+                addMessage('user', testMessage);
+
+                const response = await aiService.generateResponse(testMessage);
+
+                addMessage('ai', response);
+
+                addTestResult('复杂对话测试',
+                    `✅ 复杂对话测试成功\n问题: ${testMessage.substring(0, 50)}...\n回复长度: ${response.length} 字符\n回复预览: ${response.substring(0, 300)}...`,
+                    'success');
+                updateStatus('复杂对话测试成功', 'success');
+
+            } catch (error) {
+                addTestResult('复杂对话测试', '❌ 复杂对话失败: ' + error.message, 'error');
+                updateStatus('复杂对话测试失败', 'error');
+            }
+        }
+
+        // 发送消息
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+
+            if (!message) {
+                return;
+            }
+
+            if (!aiService) {
+                addTestResult('手动对话', '❌ 请先运行初始化测试', 'error');
+                return;
+            }
+
+            const sendBtn = document.getElementById('sendBtn');
+            const originalText = sendBtn.textContent;
+            sendBtn.textContent = '发送中...';
+            sendBtn.disabled = true;
+            input.value = '';
+
+            addMessage('user', message);
+
+            try {
+                const response = await aiService.generateResponse(message);
+                addMessage('ai', response);
+            } catch (error) {
+                addMessage('ai', '抱歉，发生了错误: ' + error.message);
+            } finally {
+                sendBtn.textContent = originalText;
+                sendBtn.disabled = false;
+            }
+        }
+
+        // 运行所有测试
+        async function runAllTests() {
+            document.getElementById('testResults').innerHTML = '';
+            document.getElementById('chatMessages').innerHTML = '';
+
+            await testInitialization();
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            await testJWT();
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            await testBasicChat();
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            await testComplexChat();
+
+            updateStatus('所有测试完成！🎉', 'success');
+        }
+
+        // 回车发送消息
+        document.getElementById('chatInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // 页面加载时的说明
+        window.addEventListener('load', () => {
+            updateStatus('准备就绪，点击按钮开始测试', 'info');
+            addTestResult('测试说明',
+                '修复后的智养AI网站包含以下改进：\n' +
+                '1. ✅ 多端点JWT Token获取机制\n' +
+                '2. ✅ 智能API端点切换\n' +
+                '3. ✅ 增强的错误处理和日志\n' +
+                '4. ✅ Token缓存和自动刷新\n' +
+                '5. ✅ 备用认证方案\n' +
+                '6. ✅ 详细的调试信息\n' +
+                '7. ✅ 自动连接测试和配置保存', 'info');
+        });
+    </script>
+</body>
+</html>

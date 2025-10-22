@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智养AI - 您的专属营养教练</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=General+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23C9D3CA'/%3E%3Cpath d='M50 20 Q55 35 50 50 Q45 65 50 80' stroke='%23254B5A' stroke-width='3' fill='none'/%3E%3C/svg%3E">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header class="header" role="navigation">
+        <nav class="nav-container">
+            <div class="nav-brand">
+                <div class="logo">
+                    <svg viewBox="0 0 40 40" class="logo-icon">
+                        <circle cx="20" cy="20" r="18" fill="#C9D3CA"/>
+                        <path d="M20 8 Q23 17 20 20 Q17 23 20 32" stroke="#254B5A" stroke-width="2" fill="none"/>
+                    </svg>
+                    <span class="logo-text">智养AI</span>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#features" class="nav-link">功能特色</a></li>
+                <li><a href="#how-it-works" class="nav-link">工作原理</a></li>
+                <li><a href="#testimonials" class="nav-link">用户故事</a></li>
+                <li><a href="#pricing" class="nav-link">会员计划</a></li>
+                <li><a href="#" class="nav-link" onclick="app.toggleAIMode()" id="ai-mode-toggle">🎭 演示模式</a></li>
+                <li><a href="#" class="nav-link" onclick="app.showAIConfig()">⚙️ 设置</a></li>
+                <li><a href="#ai-chat" class="nav-link nav-cta">开始体验</a></li>
+            </ul>
+            <button class="mobile-menu-toggle" aria-label="切换菜单">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero区域 - 第一个滚动故事章节 -->
+        <section class="hero" id="hero">
+            <div class="hero-container">
+                <div class="hero-content">
+                    <h1 class="hero-title fade-in-up">
+                        健康之路，<span class="text-highlight">不必复杂</span>
+                    </h1>
+                    <p class="hero-subtitle fade-in-up delay-100">
+                        在信息过载的时代，让温暖的AI科学教练成为您向导。不评判，只支持；不极端，只可持续。
+                    </p>
+                    <div class="hero-actions fade-in-up delay-200">
+                        <a href="#ai-chat" class="btn btn-primary">开始您的健康之旅</a>
+                        <a href="#how-it-works" class="btn btn-secondary">了解更多</a>
+                    </div>
+                </div>
+                <div class="hero-visual fade-in-up delay-300">
+                    <div class="floating-cards">
+                        <div class="card card-1">
+                            <div class="card-icon">🥗</div>
+                            <div class="card-text">个性化营养</div>
+                        </div>
+                        <div class="card card-2">
+                            <div class="card-icon">📸</div>
+                            <div class="card-text">拍照记录</div>
+                        </div>
+                        <div class="card card-3">
+                            <div class="card-icon">💤</div>
+                            <div class="card-text">睡眠分析</div>
+                        </div>
+                        <div class="card card-4">
+                            <div class="card-icon">🎯</div>
+                            <div class="card-text">目标追踪</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 问题共鸣区域 - 第二个章节 -->
+        <section class="pain-points" id="pain-points">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">您是否也感到<span class="text-highlight">迷失</span>？</h2>
+                    <p class="section-subtitle">在追求健康的路上，您并不孤单</p>
+                </div>
+                <div class="pain-points-grid">
+                    <div class="pain-point card-hover">
+                        <div class="pain-point-icon">🤯</div>
+                        <h3>信息过载</h3>
+                        <p>相互矛盾的饮食建议让人无所适从，不知道该相信谁</p>
+                    </div>
+                    <div class="pain-point card-hover">
+                        <div class="pain-point-icon">📱</div>
+                        <h3>应用疲劳</h3>
+                        <p>繁琐的手动输入让人难以坚持，最终放弃记录</p>
+                    </div>
+                    <div class="pain-point card-hover">
+                        <div class="pain-point-icon">😔</div>
+                        <h3>缺乏支持</h3>
+                        <p>感到孤单，没有人理解自己的挣扎和进步</p>
+                    </div>
+                    <div class="pain-point card-hover">
+                        <div class="pain-point-icon">🎯</div>
+                        <h3>一刀切方案</h3>
+                        <p>通用的计划不适合自己的生活方式和需求</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 解决方案区域 - 第三个章节 -->
+        <section class="solution" id="solution">
+            <div class="container">
+                <div class="solution-content">
+                    <div class="solution-text">
+                        <h2 class="section-title">遇见您的<span class="text-highlight">共情科学家</span></h2>
+                        <p class="section-subtitle">
+                            我们将前沿的营养科学与温暖的人文关怀相结合，为您提供真正个性化的健康指导。
+                        </p>
+                        <div class="solution-features">
+                            <div class="feature-item">
+                                <div class="feature-icon">🧠</div>
+                                <div class="feature-content">
+                                    <h4>科学严谨</h4>
+                                    <p>基于最新营养学研究，为您提供可靠的健康建议</p>
+                                </div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">💝</div>
+                                <div class="feature-content">
+                                    <h4>温暖支持</h4>
+                                    <p>理解您的挑战，庆祝每一个小进步，陪伴您成长</p>
+                                </div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">🎯</div>
+                                <div class="feature-content">
+                                    <h4>个性定制</h4>
+                                    <p>根据您的生活方式、偏好和目标，量身定制方案</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="solution-visual">
+                        <div class="ai-avatar-container">
+                            <div class="ai-avatar">
+                                <div class="avatar-circle"></div>
+                                <div class="avatar-glow"></div>
+                                <div class="avatar-text">AI</div>
+                            </div>
+                            <div class="floating-elements">
+                                <div class="element element-1">营养分析</div>
+                                <div class="element element-2">睡眠质量</div>
+                                <div class="element element-3">运动恢复</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 核心功能区域 -->
+        <section class="features" id="features">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">为您的健康之旅<span class="text-highlight">精心设计</span></h2>
+                    <p class="section-subtitle">每一个功能都为了让您的生活更简单、更健康</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-card-icon">🤖</div>
+                        <h3>您的专属AI教练</h3>
+                        <p>终于，一个真正懂您的教练。我们的AI不仅拥有专业的营养知识，更重要的是，它会倾听、理解并支持您的独特健康旅程。</p>
+                        <ul class="feature-list">
+                            <li>24/7随时陪伴的智能对话</li>
+                            <li>基于您的数据提供个性化建议</li>
+                            <li>理解您的情感需求，提供温暖支持</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-card-icon">📸</div>
+                        <h3>轻松拍照记录</h3>
+                        <p>告别繁琐的手动输入。只需拍张照片，我们的AI就能自动识别食物，计算营养成分，让记录变得轻松愉快。</p>
+                        <ul class="feature-list">
+                            <li>智能食物识别，准确率95%以上</li>
+                            <li>自动计算卡路里和营养成分</li>
+                            <li>支持批量记录，节省您的宝贵时间</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-card-icon">📊</div>
+                        <h3>预测性健康洞察</h3>
+                        <p>不只是记录，更是预见。通过分析您的健康数据模式，我们的AI能够提前发现潜在问题，提供预防性建议。</p>
+                        <ul class="feature-list">
+                            <li>基于数据的趋势分析</li>
+                            <li>个性化的健康预警系统</li>
+                            <li>可行的改善建议，让您主动掌控健康</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI对话演示区域 -->
+        <section class="ai-chat-demo" id="ai-chat">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">体验<span class="text-highlight">温暖对话</span></h2>
+                    <p class="section-subtitle">感受AI教练的共情与智慧</p>
+                </div>
+                <div class="chat-demo-container">
+                    <div class="chat-window">
+                        <div class="chat-header">
+                            <div class="ai-avatar-small">
+                                <div class="avatar-circle-small"></div>
+                                <div class="avatar-text-small">AI</div>
+                            </div>
+                            <div class="chat-status">
+                                <h4>智养AI教练</h4>
+                                <span class="status-indicator online">在线</span>
+                            </div>
+                        </div>
+                        <div class="chat-messages">
+                            <div class="message ai-message typing-indicator">
+                                <div class="message-avatar">
+                                    <div class="avatar-circle-small"></div>
+                                </div>
+                                <div class="message-content">
+                                    <div class="typing-dots">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-input-container">
+                            <input type="text" class="chat-input" placeholder="输入您的消息...">
+                            <button class="chat-send-btn">发送</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="example-messages">
+                    <div class="example-message" data-message="welcome">
+                        <div class="example-header">
+                            <span class="example-badge">新用户引导</span>
+                            <h4>欢迎语</h4>
+                        </div>
+                        <p>"欢迎！很高兴能与您一起开启这段健康旅程。在开始之前，让我们聊一聊吧。您的目标、您的挑战，以及您与食物的故事——我都想了解。这里没有对错，只有属于您的独特路径。"</p>
+                    </div>
+                    <div class="example-message" data-message="non-judgmental">
+                        <div class="example-header">
+                            <span class="example-badge">非评判性回应</span>
+                            <h4>记录高热量食物后</h4>
+                        </div>
+                        <p>"感谢记录。我看到您享用了一份美味的汉堡和薯条。重要的是，您在倾听自己身体的需求。让我们看看这顿饭如何融入您今天的能量版图，并一起规划接下来的平衡。"</p>
+                    </div>
+                    <div class="example-message" data-message="proactive">
+                        <div class="example-header">
+                            <span class="example-badge">主动关怀</span>
+                            <h4>基于数据模式的建议</h4>
+                        </div>
+                        <p>"我注意到，在您进行高强度锻炼后的第二天，您的睡眠质量似乎有所下降。这可能是身体恢复需要更多支持的信号。今晚尝试增加一些富含镁的食物，比如菠菜或杏仁，可能会有帮助。需要为您推荐一些相关的食谱吗？"</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 工作原理区域 -->
+        <section class="how-it-works" id="how-it-works">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">简单三步，开启<span class="text-highlight">健康之旅</span></h2>
+                    <p class="section-subtitle">一切从理解您开始</p>
+                </div>
+                <div class="steps-container">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>深度了解您</h3>
+                            <p>通过友好的对话，我们了解您的目标、生活方式、饮食偏好和健康挑战。每个问题都经过精心设计，既科学又温暖。</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>轻松记录生活</h3>
+                            <p>拍照记录饮食，简单记录运动和睡眠。我们的AI会自动分析数据，发现模式，为您提供越来越个性化的建议。</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>持续优化调整</h3>
+                            <p>基于您的反馈和身体变化，AI会不断调整建议。这不是一个固定的计划，而是与您共同成长的健康伙伴。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="cta-container">
+                    <a href="#ai-chat" class="btn btn-primary btn-large">立即开始体验</a>
+                    <p class="cta-note">无压力试用，随时可以暂停</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 用户故事区域 -->
+        <section class="testimonials" id="testimonials">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">真实用户的<span class="text-highlight">改变故事</span></h2>
+                    <p class="section-subtitle">他们的经历，也许就是您的未来</p>
+                </div>
+                <div class="testimonials-slider">
+                    <div class="testimonial active">
+                        <div class="testimonial-content">
+                            <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                            <p>"终于找到了一个不会让我感到内疚的健康助手。智养AI的教练理解我工作的压力，从不苛刻，而是帮我找到平衡。现在的我更有活力，也更快乐。"</p>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">👩‍💼</div>
+                                <div class="author-info">
+                                    <h4>李明雨</h4>
+                                    <span>互联网产品经理，32岁</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial">
+                        <div class="testimonial-content">
+                            <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                            <p>"作为一个程序员，我总是忘记吃饭。智养AI的提醒功能很贴心，不会像其他应用那样烦人，而是在合适的时间温柔地提醒我。拍照记录功能太棒了！"</p>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">👨‍💻</div>
+                                <div class="author-info">
+                                    <h4>张技术</h4>
+                                    <span>软件工程师，28岁</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial">
+                        <div class="testimonial-content">
+                            <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                            <p>"试过无数减肥方法，都因为太复杂而放弃。智养AI完全不同，它理解我的生活节奏，建议都是我可以实际执行的。半年下来，不仅体重下降了，更重要的是养成了健康的习惯。"</p>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">👨‍👩‍👧‍👦</div>
+                                <div class="author-info">
+                                    <h4>王家庭</h4>
+                                    <span>全职妈妈，35岁</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-dots">
+                    <button class="dot active" data-testimonial="0"></button>
+                    <button class="dot" data-testimonial="1"></button>
+                    <button class="dot" data-testimonial="2"></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 会员计划区域 -->
+        <section class="pricing" id="pricing">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">选择适合您的<span class="text-highlight">支持方案</span></h2>
+                    <p class="section-subtitle">灵活的选择，无压力的承诺</p>
+                </div>
+                <div class="pricing-cards">
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h3>体验之旅</h3>
+                            <div class="price">
+                                <span class="currency">¥</span>
+                                <span class="amount">0</span>
+                                <span class="period">/7天</span>
+                            </div>
+                            <p class="pricing-description">感受智养AI的温暖陪伴</p>
+                        </div>
+                        <ul class="pricing-features">
+                            <li>✓ AI教练对话支持</li>
+                            <li>✓ 每日3次拍照记录</li>
+                            <li>✓ 基础数据分析</li>
+                            <li>✓ 健康目标设定</li>
+                        </ul>
+                        <button class="btn btn-outline">免费试用</button>
+                    </div>
+                    <div class="pricing-card featured">
+                        <div class="pricing-badge">最受欢迎</div>
+                        <div class="pricing-header">
+                            <h3>深度陪伴</h3>
+                            <div class="price">
+                                <span class="currency">¥</span>
+                                <span class="amount">68</span>
+                                <span class="period">/月</span>
+                            </div>
+                            <p class="pricing-description">全方位的个性化健康指导</p>
+                        </div>
+                        <ul class="pricing-features">
+                            <li>✓ 无限AI教练对话</li>
+                            <li>✓ 无限拍照记录</li>
+                            <li>✓ 高级数据分析与洞察</li>
+                            <li>✓ 个性化食谱推荐</li>
+                            <li>✓ 睡眠与压力管理</li>
+                            <li>✓ 优先客服支持</li>
+                        </ul>
+                        <button class="btn btn-primary">选择深度陪伴</button>
+                    </div>
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h3>终身伙伴</h3>
+                            <div class="price">
+                                <span class="currency">¥</span>
+                                <span class="amount">598</span>
+                                <span class="period">/年</span>
+                            </div>
+                            <p class="pricing-description">长期健康的智慧投资</p>
+                        </div>
+                        <ul class="pricing-features">
+                            <li>✓ 深度陪伴所有功能</li>
+                            <li>✓ 年度健康报告</li>
+                            <li>✓ 家庭成员共享（3人）</li>
+                            <li>✓ 专属营养师咨询</li>
+                            <li>✓ 线下健康活动优先参与</li>
+                        </ul>
+                        <button class="btn btn-outline">选择终身伙伴</button>
+                    </div>
+                </div>
+                <div class="pricing-guarantee">
+                    <div class="guarantee-icon">🛡️</div>
+                    <div class="guarantee-content">
+                        <h4>30天无条件退款保证</h4>
+                        <p>我们相信您会爱上智养AI的陪伴。如果30天内不满意，我们全额退款，无需理由。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 最终CTA区域 -->
+        <section class="final-cta">
+            <div class="container">
+                <div class="final-cta-content">
+                    <h2 class="final-cta-title">您的健康之旅，<span class="text-highlight">现在开始</span></h2>
+                    <p class="final-cta-subtitle">
+                        不必等待完美的时机，不必准备万全的计划。<br>
+                        最好的开始时间就是现在，最好的陪伴者就在这里。
+                    </p>
+                    <div class="final-cta-actions">
+                        <a href="#ai-chat" class="btn btn-primary btn-large">立即免费体验</a>
+                        <p class="final-cta-note">7天免费试用 • 无需信用卡 • 随时可以取消</p>
+                    </div>
+                </div>
+                <div class="final-cta-visual">
+                    <div class="pulse-circle">
+                        <div class="pulse-content">
+                            <span class="pulse-icon">🌱</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <svg viewBox="0 0 40 40" class="logo-icon">
+                            <circle cx="20" cy="20" r="18" fill="#C9D3CA"/>
+                            <path d="M20 8 Q23 17 20 20 Q17 23 20 32" stroke="#254B5A" stroke-width="2" fill="none"/>
+                        </svg>
+                        <span class="logo-text">智养AI</span>
+                    </div>
+                    <p>温暖的AI营养教练，陪伴您的健康之旅</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-section">
+                        <h4>产品</h4>
+                        <ul>
+                            <li><a href="#features">功能特色</a></li>
+                            <li><a href="#pricing">会员计划</a></li>
+                            <li><a href="#ai-chat">AI教练</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h4>支持</h4>
+                        <ul>
+                            <li><a href="#">帮助中心</a></li>
+                            <li><a href="#">联系我们</a></li>
+                            <li><a href="#">常见问题</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h4>关于</h4>
+                        <ul>
+                            <li><a href="#">关于我们</a></li>
+                            <li><a href="#">隐私政策</a></li>
+                            <li><a href="#">使用条款</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 智养AI. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- AI配置弹窗 -->
+    <div id="ai-config-modal" class="modal" style="display: none;">
+        <div class="modal-overlay" onclick="app.hideAIConfig()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>AI服务配置</h3>
+                <button class="modal-close" onclick="app.hideAIConfig()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="config-tabs">
+                    <button class="tab-button active" data-tab="provider">选择提供商</button>
+                    <button class="tab-button" data-tab="api-key">API密钥</button>
+                    <button class="tab-button" data-tab="advanced">高级设置</button>
+                </div>
+
+                <div class="tab-content active" id="provider-tab">
+                    <div class="provider-grid">
+                        <div class="provider-card" data-provider="openai">
+                            <div class="provider-icon">🤖</div>
+                            <h4>OpenAI</h4>
+                            <p>GPT-3.5, GPT-4</p>
+                            <span class="provider-status"></span>
+                        </div>
+                        <div class="provider-card" data-provider="claude">
+                            <div class="provider-icon">🧠</div>
+                            <h4>Claude</h4>
+                            <p>Claude-3 系列</p>
+                            <span class="provider-status"></span>
+                        </div>
+                        <div class="provider-card" data-provider="gemini">
+                            <div class="provider-icon">✨</div>
+                            <h4>Gemini</h4>
+                            <p>Google AI</p>
+                            <span class="provider-status"></span>
+                        </div>
+                        <div class="provider-card" data-provider="bigmodel">
+                            <div class="provider-icon">🚀</div>
+                            <h4>智谱AI</h4>
+                            <p>GLM-4.6</p>
+                            <span class="provider-status"></span>
+                        </div>
+                        <div class="provider-card" data-provider="local">
+                            <div class="provider-icon">🏠</div>
+                            <h4>本地服务</h4>
+                            <p>Ollama 等</p>
+                            <span class="provider-status"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="api-key-tab">
+                    <div class="form-group">
+                        <label for="api-provider">AI提供商</label>
+                        <select id="api-provider">
+                            <option value="bigmodel" selected>智谱AI (BigModel)</option>
+                            <option value="openai">OpenAI</option>
+                            <option value="claude">Claude (Anthropic)</option>
+                            <option value="gemini">Gemini (Google)</option>
+                            <option value="local">本地服务</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="api-key">API密钥</label>
+                        <input type="password" id="api-key" placeholder="输入您的API密钥">
+                        <small>您的API密钥将安全存储在浏览器本地</small>
+                    </div>
+                    <div class="form-group" id="base-url-group" style="display: none;">
+                        <label for="base-url">服务地址</label>
+                        <input type="url" id="base-url" placeholder="http://localhost:11434">
+                        <small>仅本地服务需要填写</small>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="advanced-tab">
+                    <div class="form-group">
+                        <label for="model">模型选择</label>
+                        <select id="model">
+                            <option value="">默认模型</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="temperature">创造性 (Temperature)</label>
+                        <input type="range" id="temperature" min="0" max="1" step="0.1" value="0.7">
+                        <span class="range-value">0.7</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="max-tokens">最大回复长度</label>
+                        <input type="number" id="max-tokens" min="100" max="4000" value="1000">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="app.testAIConnection()">测试连接</button>
+                <button class="btn btn-primary" onclick="app.saveAIConfig()">保存配置</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="ai-service.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
